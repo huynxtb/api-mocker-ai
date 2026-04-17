@@ -12,6 +12,12 @@ That's it. No fixtures, no Faker setup, no Postman juggling. The data looks like
 
 Built for frontend teams waiting on the backend.
 
+## Demo
+
+[![Watch the demo](https://img.youtube.com/vi/ePYLDd19MjA/maxresdefault.jpg)](https://youtu.be/ePYLDd19MjA)
+
+▶️ **[Watch on YouTube](https://youtu.be/ePYLDd19MjA)**
+
 ## What it does
 
 - **Projects + auto CRUD** — create one resource, get 5 endpoints for free: list, detail, create, update, delete
