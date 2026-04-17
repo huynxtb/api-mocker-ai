@@ -123,17 +123,40 @@
   },
   "settings": {
     "title": "设置",
+    "subtitle": "配置 AI 账户并设置主账户和备用链以生成数据。",
     "aiProvider": "AI 提供商",
     "apiKey": "API 密钥",
     "apiKeyPlaceholder": "输入您的 API 密钥",
     "model": "模型",
     "modelPlaceholder": "例如: gpt-4o, gemini-1.5-pro, grok-2-latest",
     "missingKey": "当前选择的 AI 提供商尚未配置 API 密钥。请在下方输入 API 密钥以开始生成数据。",
+    "notReady": "尚未配置主 AI 账户。请在下方添加账户并将其设为主账户。",
     "saveSuccess": "设置保存成功",
     "providers": {
       "openai": "OpenAI (ChatGPT)",
       "gemini": "Google Gemini",
       "grok": "Grok"
+    },
+    "accounts": {
+      "title": "AI 账户",
+      "subtitle": "每个提供商可添加多个账户，数量不限。",
+      "add": "添加",
+      "empty": "还没有账户。请在下方添加第一个 AI 账户。",
+      "label": "名称",
+      "labelPlaceholder": "例如：OpenAI 个人",
+      "delete": "删除账户"
+    },
+    "chain": {
+      "title": "执行链",
+      "subtitle": "先使用主账户，失败时按顺序切换到备用账户。",
+      "primary": "主账户",
+      "fallback": "备用 {{index}}",
+      "addFallback": "添加备用",
+      "selectAccount": "— 选择账户 —",
+      "noAccounts": "请先在上方添加至少一个账户来配置执行链。",
+      "moveUp": "上移",
+      "moveDown": "下移",
+      "remove": "移除"
     }
   }
 }

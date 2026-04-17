@@ -123,17 +123,40 @@
   },
   "settings": {
     "title": "設定",
+    "subtitle": "AIアカウントを設定し、プライマリとフォールバックチェーンを構成します。",
     "aiProvider": "AIプロバイダー",
     "apiKey": "APIキー",
     "apiKeyPlaceholder": "APIキーを入力",
     "model": "モデル",
     "modelPlaceholder": "例: gpt-4o, gemini-1.5-pro, grok-2-latest",
     "missingKey": "選択中のAIプロバイダーにAPIキーが設定されていません。下にAPIキーを入力してデータ生成を開始してください。",
+    "notReady": "プライマリAIアカウントが未設定です。アカウントを追加し、プライマリに指定してください。",
     "saveSuccess": "設定が保存されました",
     "providers": {
       "openai": "OpenAI (ChatGPT)",
       "gemini": "Google Gemini",
       "grok": "Grok"
+    },
+    "accounts": {
+      "title": "AIアカウント",
+      "subtitle": "各プロバイダーに複数のアカウントを追加できます。上限はありません。",
+      "add": "追加",
+      "empty": "アカウントがありません。最初のAIアカウントを下に追加してください。",
+      "label": "ラベル",
+      "labelPlaceholder": "例: OpenAI 個人用",
+      "delete": "アカウントを削除"
+    },
+    "chain": {
+      "title": "実行チェーン",
+      "subtitle": "まずプライマリを試し、失敗した場合は順にフォールバックを使用します。",
+      "primary": "プライマリ",
+      "fallback": "フォールバック {{index}}",
+      "addFallback": "フォールバックを追加",
+      "selectAccount": "— アカウントを選択 —",
+      "noAccounts": "チェーンを設定するには、上にアカウントを1つ以上追加してください。",
+      "moveUp": "上へ",
+      "moveDown": "下へ",
+      "remove": "削除"
     }
   }
 }

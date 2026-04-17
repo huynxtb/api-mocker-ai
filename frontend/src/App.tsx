@@ -24,13 +24,7 @@ function SettingsGuard({ children }: { children: React.ReactNode }) {
     if (location.pathname === '/settings') return;
 
     settingsApi.get().then((res) => {
-      const s = res.data.data;
-      const providerKeyMap: Record<string, boolean> = {
-        openai: s.hasOpenaiKey,
-        gemini: s.hasGeminiKey,
-        grok: s.hasGrokKey,
-      };
-      if (!providerKeyMap[s.aiProvider]) {
+      if (!res.data.data?.ready) {
         showAlert('error', t('endpoint.configRequired'), { id: 'config-required' });
         navigate('/settings');
       }

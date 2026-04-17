@@ -228,13 +228,7 @@ export default function EndpointDetailPage() {
     if (statusCodeHasBody(statusCode) && responseStructure.trim()) {
       try {
         const settingsRes = await settingsApi.get();
-        const s = settingsRes.data.data;
-        const providerKeyMap: Record<string, boolean> = {
-          openai: s.hasOpenaiKey,
-          gemini: s.hasGeminiKey,
-          grok: s.hasGrokKey,
-        };
-        if (!providerKeyMap[s.aiProvider]) {
+        if (!settingsRes.data.data?.ready) {
           showAlert('error', t('endpoint.configRequired'));
           navigate('/settings');
           return;

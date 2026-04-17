@@ -1,84 +1,137 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Save } from 'lucide-react';
+import {
+  Save,
+  Plus,
+  Trash2,
+  Eye,
+  EyeOff,
+  ArrowUp,
+  ArrowDown,
+  AlertTriangle,
+  X,
+} from 'lucide-react';
 import { useAlert } from '../context/AlertContext';
 import { settingsApi } from '../services/api';
+import { AiAccount, AiProviderType } from '../types';
 import Button from '../components/common/Button';
 
-const AI_PROVIDERS = [
-  {
-    value: 'openai',
-    label: 'settings.providers.openai',
-    name: 'OpenAI',
-    description: 'GPT-4o, GPT-4 Turbo',
-    logo: (
-      <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
-        <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.896zm16.597 3.855l-5.843-3.372L15.115 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.403-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08-4.778 2.758a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z" />
-      </svg>
-    ),
-  },
-  {
-    value: 'gemini',
-    label: 'settings.providers.gemini',
-    name: 'Gemini',
-    description: 'Gemini 1.5 Pro, Flash',
-    logo: (
-      <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
-        <path d="M12 0C5.372 0 0 5.373 0 12s5.372 12 12 12 12-5.373 12-12S18.628 0 12 0zm0 2.118c.72 0 1.407.1 2.062.274L12 7.647 9.938 2.392A9.88 9.88 0 0 1 12 2.118zm-3.23.617L10.686 8.4 5.13 6.04a9.892 9.892 0 0 1 3.64-3.305zM2.118 12c0-.72.1-1.407.274-2.062L7.647 12l-5.255 2.062A9.88 9.88 0 0 1 2.118 12zm.617 3.23L8.4 13.314 6.04 18.87a9.892 9.892 0 0 1-3.305-3.64zM12 21.882a9.88 9.88 0 0 1-2.062-.274L12 16.353l2.062 5.255A9.88 9.88 0 0 1 12 21.882zm3.23-.617L13.314 15.6l5.556 2.36a9.892 9.892 0 0 1-3.64 3.305zM16.353 12l5.255-2.062a9.88 9.88 0 0 1 0 4.124L16.353 12zm1.607-5.13L12.4 8.4 14.76 2.844a9.892 9.892 0 0 1 3.2 4.026z" />
-      </svg>
-    ),
-  },
-  {
-    value: 'grok',
-    label: 'settings.providers.grok',
-    name: 'Grok',
-    description: 'Grok-2, Grok Vision',
-    logo: (
-      <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-      </svg>
-    ),
-  },
+type ProviderMeta = { value: AiProviderType; name: string; description: string };
+
+const PROVIDERS: ProviderMeta[] = [
+  { value: 'openai', name: 'OpenAI', description: 'GPT-4o, GPT-4 Turbo' },
+  { value: 'gemini', name: 'Gemini', description: 'Gemini 1.5 Pro, Flash' },
+  { value: 'grok', name: 'Grok', description: 'Grok-2, Grok Vision' },
 ];
+
+const DEFAULT_MODELS: Record<AiProviderType, string> = {
+  openai: 'gpt-4o-mini',
+  gemini: 'gemini-1.5-flash',
+  grok: 'grok-2-latest',
+};
+
+function generateId(): string {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  return `acc_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function providerBadge(provider: AiProviderType): string {
+  return PROVIDERS.find((p) => p.value === provider)?.name || provider;
+}
 
 export default function SettingsPage() {
   const { t } = useTranslation();
   const { showAlert } = useAlert();
-  const [aiProvider, setAiProvider] = useState('openai');
-  const [openaiApiKey, setOpenaiApiKey] = useState('');
-  const [geminiApiKey, setGeminiApiKey] = useState('');
-  const [grokApiKey, setGrokApiKey] = useState('');
-  const [openaiModel, setOpenaiModel] = useState('gpt-4o-mini');
-  const [geminiModel, setGeminiModel] = useState('gemini-1.5-flash');
-  const [grokModel, setGrokModel] = useState('grok-2-latest');
+
+  const [accounts, setAccounts] = useState<AiAccount[]>([]);
+  const [primaryAccountId, setPrimaryAccountId] = useState<string>('');
+  const [fallbackAccountIds, setFallbackAccountIds] = useState<string[]>([]);
+  const [ready, setReady] = useState<boolean>(true);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [missingKey, setMissingKey] = useState(false);
-  const [showKey, setShowKey] = useState(false);
+  const [visibleKeys, setVisibleKeys] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    settingsApi.get().then((res) => {
-      const s = res.data.data;
-      setAiProvider(s.aiProvider);
-      setOpenaiApiKey(s.openaiApiKey);
-      setGeminiApiKey(s.geminiApiKey);
-      setGrokApiKey(s.grokApiKey);
-      setOpenaiModel(s.openaiModel || 'gpt-4o-mini');
-      setGeminiModel(s.geminiModel || 'gemini-1.5-flash');
-      setGrokModel(s.grokModel || 'grok-2-latest');
-      const keyMap: Record<string, boolean> = {
-        openai: s.hasOpenaiKey,
-        gemini: s.hasGeminiKey,
-        grok: s.hasGrokKey,
-      };
-      setMissingKey(!keyMap[s.aiProvider]);
-    }).finally(() => setLoading(false));
+    settingsApi.get()
+      .then((res) => {
+        const s = res.data.data;
+        setAccounts(s.accounts || []);
+        setPrimaryAccountId(s.primaryAccountId || '');
+        setFallbackAccountIds(s.fallbackAccountIds || []);
+        setReady(Boolean(s.ready));
+      })
+      .finally(() => setLoading(false));
   }, []);
+
+  const accountsById = useMemo(() => new Map(accounts.map((a) => [a.id, a])), [accounts]);
+
+  const availableForChain = useMemo(() => {
+    const used = new Set([primaryAccountId, ...fallbackAccountIds].filter(Boolean));
+    return (currentId: string) => accounts.filter((a) => a.id === currentId || !used.has(a.id));
+  }, [accounts, primaryAccountId, fallbackAccountIds]);
+
+  function addAccount(provider: AiProviderType) {
+    const newAccount: AiAccount = {
+      id: generateId(),
+      provider,
+      label: `${providerBadge(provider)} ${accounts.filter((a) => a.provider === provider).length + 1}`,
+      apiKey: '',
+      model: DEFAULT_MODELS[provider],
+    };
+    setAccounts((prev) => [...prev, newAccount]);
+    if (!primaryAccountId) setPrimaryAccountId(newAccount.id);
+  }
+
+  function updateAccount(id: string, patch: Partial<AiAccount>) {
+    setAccounts((prev) => prev.map((a) => (a.id === id ? { ...a, ...patch } : a)));
+  }
+
+  function deleteAccount(id: string) {
+    setAccounts((prev) => prev.filter((a) => a.id !== id));
+    if (primaryAccountId === id) setPrimaryAccountId('');
+    setFallbackAccountIds((prev) => prev.filter((fid) => fid !== id));
+  }
+
+  function toggleKeyVisible(id: string) {
+    setVisibleKeys((prev) => ({ ...prev, [id]: !prev[id] }));
+  }
+
+  function addFallback() {
+    setFallbackAccountIds((prev) => [...prev, '']);
+  }
+
+  function updateFallback(index: number, id: string) {
+    setFallbackAccountIds((prev) => prev.map((v, i) => (i === index ? id : v)));
+  }
+
+  function removeFallback(index: number) {
+    setFallbackAccountIds((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function moveFallback(index: number, dir: -1 | 1) {
+    setFallbackAccountIds((prev) => {
+      const next = [...prev];
+      const target = index + dir;
+      if (target < 0 || target >= next.length) return prev;
+      [next[index], next[target]] = [next[target]!, next[index]!];
+      return next;
+    });
+  }
 
   async function handleSave() {
     setSaving(true);
     try {
-      await settingsApi.update({ aiProvider, openaiApiKey, geminiApiKey, grokApiKey, openaiModel, geminiModel, grokModel });
+      const cleanedFallbacks = fallbackAccountIds.filter((id) => id && accountsById.has(id));
+      const res = await settingsApi.update({
+        accounts,
+        primaryAccountId,
+        fallbackAccountIds: cleanedFallbacks,
+      });
+      const s = res.data.data;
+      setAccounts(s.accounts || []);
+      setPrimaryAccountId(s.primaryAccountId || '');
+      setFallbackAccountIds(s.fallbackAccountIds || []);
+      setReady(Boolean(s.ready));
       showAlert('success', t('settings.saveSuccess'));
     } catch {
       showAlert('error', t('common.error'));
@@ -86,30 +139,6 @@ export default function SettingsPage() {
       setSaving(false);
     }
   }
-
-  const currentKeyValue =
-    aiProvider === 'openai' ? openaiApiKey
-    : aiProvider === 'gemini' ? geminiApiKey
-    : grokApiKey;
-
-  const setCurrentKey = (val: string) => {
-    if (aiProvider === 'openai') setOpenaiApiKey(val);
-    else if (aiProvider === 'gemini') setGeminiApiKey(val);
-    else setGrokApiKey(val);
-  };
-
-  const currentModelValue =
-    aiProvider === 'openai' ? openaiModel
-    : aiProvider === 'gemini' ? geminiModel
-    : grokModel;
-
-  const setCurrentModel = (val: string) => {
-    if (aiProvider === 'openai') setOpenaiModel(val);
-    else if (aiProvider === 'gemini') setGeminiModel(val);
-    else setGrokModel(val);
-  };
-
-  const activeProvider = AI_PROVIDERS.find((p) => p.value === aiProvider)!;
 
   if (loading) {
     return (
@@ -126,135 +155,129 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {/* Page header */}
+    <div className="max-w-3xl mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
           {t('settings.title')}
         </h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Configure your AI provider and API credentials.
+          {t('settings.subtitle')}
         </p>
       </div>
 
-      {/* Missing key alert */}
-      {missingKey && (
+      {!ready && (
         <div className="mb-6 flex gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3.5 dark:border-amber-700/50 dark:bg-amber-900/20">
-          <div className="flex-shrink-0 mt-0.5">
-            <svg className="w-4 h-4 text-amber-500 dark:text-amber-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-            </svg>
-          </div>
+          <AlertTriangle className="w-4 h-4 text-amber-500 dark:text-amber-400 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-amber-700 dark:text-amber-300 leading-relaxed">
-            {t('settings.missingKey')}
+            {t('settings.notReady')}
           </p>
         </div>
       )}
 
       <div className="space-y-6">
-        {/* Provider selection card */}
-        <div className="rounded-xl border border-gray-200 dark:border-gray-700/60 bg-white dark:bg-gray-800/50 overflow-hidden">
+        {/* Accounts */}
+        <section className="rounded-xl border border-gray-200 dark:border-gray-700/60 bg-white dark:bg-gray-800/50 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700/60">
             <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-              {t('settings.aiProvider')}
+              {t('settings.accounts.title')}
             </h2>
-          </div>
-          <div className="p-6">
-            <div className="grid grid-cols-3 gap-3">
-              {AI_PROVIDERS.map((provider) => {
-                const isSelected = aiProvider === provider.value;
-                return (
-                  <button
-                    key={provider.value}
-                    type="button"
-                    onClick={() => { setAiProvider(provider.value); setShowKey(false); }}
-                    className={`relative flex flex-col items-center gap-2.5 rounded-xl border-2 px-3 py-4 text-center transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800 ${
-                      isSelected
-                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40 dark:border-indigo-500 shadow-sm'
-                        : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-750'
-                    }`}
-                  >
-                    {isSelected && (
-                      <span className="absolute top-2 right-2 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-500">
-                        <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 12 12" fill="currentColor">
-                          <path d="M3.707 5.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L5 6.586 3.707 5.293z" />
-                        </svg>
-                      </span>
-                    )}
-                    <span className={`${isSelected ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400'}`}>
-                      {provider.logo}
-                    </span>
-                    <div>
-                      <p className={`text-sm font-semibold leading-tight ${isSelected ? 'text-indigo-700 dark:text-indigo-300' : 'text-gray-800 dark:text-gray-200'}`}>
-                        {provider.name}
-                      </p>
-                      <p className={`text-xs mt-0.5 leading-tight ${isSelected ? 'text-indigo-500 dark:text-indigo-400' : 'text-gray-400 dark:text-gray-500'}`}>
-                        {provider.description}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* API key card */}
-        <div className="rounded-xl border border-gray-200 dark:border-gray-700/60 bg-white dark:bg-gray-800/50 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700/60 flex items-center gap-2">
-            <span className={`text-gray-500 dark:text-gray-400`}>{activeProvider.logo}</span>
-            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-              {activeProvider.name} {t('settings.apiKey')}
-            </h2>
-          </div>
-          <div className="p-6">
-            <div className="relative">
-              <input
-                type={showKey ? 'text' : 'password'}
-                value={currentKeyValue}
-                onChange={(e) => setCurrentKey(e.target.value)}
-                placeholder={t('settings.apiKeyPlaceholder')}
-                className="w-full rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900/50 px-4 py-2.5 pr-10 font-mono text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-colors"
-              />
-              <button
-                type="button"
-                onClick={() => setShowKey((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                tabIndex={-1}
-                aria-label={showKey ? 'Hide API key' : 'Show API key'}
-              >
-                {showKey ? (
-                  <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
-                    <path fillRule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M3.28 2.22a.75.75 0 00-1.06 1.06l14.5 14.5a.75.75 0 101.06-1.06l-1.745-1.745a10.029 10.029 0 003.3-4.38 1.651 1.651 0 000-1.185A10.004 10.004 0 009.999 3a9.956 9.956 0 00-4.744 1.194L3.28 2.22zM7.752 6.69l1.092 1.092a2.5 2.5 0 013.374 3.373l1.091 1.092a4 4 0 00-5.557-5.557z" clipRule="evenodd" />
-                    <path d="M10.748 13.93l2.523 2.523a10.003 10.003 0 01-8.032-2.836 1.651 1.651 0 010-1.185 10.003 10.003 0 012.036-3.048l1.82 1.82a2.5 2.5 0 002.5 2.5l-.847.727z" />
-                  </svg>
-                )}
-              </button>
-            </div>
-            <p className="mt-2 text-xs text-gray-400 dark:text-gray-500">
-              Your API key is stored locally and never shared.
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              {t('settings.accounts.subtitle')}
             </p>
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                {t('settings.model')}
-              </label>
-              <input
-                type="text"
-                value={currentModelValue}
-                onChange={(e) => setCurrentModel(e.target.value)}
-                placeholder={t('settings.modelPlaceholder')}
-                className="w-full rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900/50 px-4 py-2.5 font-mono text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:border-indigo-500 focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-colors"
+          </div>
+
+          <div className="p-6 space-y-4">
+            {accounts.length === 0 && (
+              <div className="text-center py-8 text-sm text-gray-500 dark:text-gray-400">
+                {t('settings.accounts.empty')}
+              </div>
+            )}
+
+            {accounts.map((account) => (
+              <AccountRow
+                key={account.id}
+                account={account}
+                isPrimary={account.id === primaryAccountId}
+                keyVisible={Boolean(visibleKeys[account.id])}
+                onToggleKey={() => toggleKeyVisible(account.id)}
+                onChange={(patch) => updateAccount(account.id, patch)}
+                onDelete={() => deleteAccount(account.id)}
+                t={t}
               />
+            ))}
+
+            <div className="flex flex-wrap gap-2 pt-2">
+              {PROVIDERS.map((p) => (
+                <button
+                  key={p.value}
+                  type="button"
+                  onClick={() => addAccount(p.value)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-dashed border-gray-300 dark:border-gray-600 text-xs font-medium text-gray-600 dark:text-gray-300 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  <Plus size={14} />
+                  {t('settings.accounts.add')} {p.name}
+                </button>
+              ))}
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Save button */}
+        {/* Execution chain */}
+        <section className="rounded-xl border border-gray-200 dark:border-gray-700/60 bg-white dark:bg-gray-800/50 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700/60">
+            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+              {t('settings.chain.title')}
+            </h2>
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              {t('settings.chain.subtitle')}
+            </p>
+          </div>
+
+          <div className="p-6 space-y-3">
+            {accounts.length === 0 ? (
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {t('settings.chain.noAccounts')}
+              </p>
+            ) : (
+              <>
+                <ChainSlot
+                  badge={t('settings.chain.primary')}
+                  accent
+                  value={primaryAccountId}
+                  options={availableForChain(primaryAccountId)}
+                  onChange={setPrimaryAccountId}
+                  placeholder={t('settings.chain.selectAccount')}
+                  t={t}
+                />
+
+                {fallbackAccountIds.map((id, idx) => (
+                  <ChainSlot
+                    key={`fb-${idx}`}
+                    badge={t('settings.chain.fallback', { index: idx + 1 })}
+                    value={id}
+                    options={availableForChain(id)}
+                    onChange={(v) => updateFallback(idx, v)}
+                    placeholder={t('settings.chain.selectAccount')}
+                    onRemove={() => removeFallback(idx)}
+                    onMoveUp={idx > 0 ? () => moveFallback(idx, -1) : undefined}
+                    onMoveDown={idx < fallbackAccountIds.length - 1 ? () => moveFallback(idx, 1) : undefined}
+                    t={t}
+                  />
+                ))}
+
+                <button
+                  type="button"
+                  onClick={addFallback}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-dashed border-gray-300 dark:border-gray-600 text-xs font-medium text-gray-600 dark:text-gray-300 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  <Plus size={14} />
+                  {t('settings.chain.addFallback')}
+                </button>
+              </>
+            )}
+          </div>
+        </section>
+
         <div className="flex justify-end">
           <Button
             variant="primary"
@@ -266,6 +289,181 @@ export default function SettingsPage() {
           </Button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function AccountRow({
+  account,
+  isPrimary,
+  keyVisible,
+  onToggleKey,
+  onChange,
+  onDelete,
+  t,
+}: {
+  account: AiAccount;
+  isPrimary: boolean;
+  keyVisible: boolean;
+  onToggleKey: () => void;
+  onChange: (patch: Partial<AiAccount>) => void;
+  onDelete: () => void;
+  t: (k: string, o?: Record<string, unknown>) => string;
+}) {
+  return (
+    <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30 p-4">
+      <div className="flex items-start gap-3">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 uppercase tracking-wide">
+          {providerBadge(account.provider)}
+        </span>
+        {isPrimary && (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 uppercase tracking-wide">
+            {t('settings.chain.primary')}
+          </span>
+        )}
+        <div className="ml-auto">
+          <button
+            type="button"
+            onClick={onDelete}
+            title={t('settings.accounts.delete')}
+            className="p-1.5 rounded-md text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors"
+          >
+            <Trash2 size={14} />
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+            {t('settings.accounts.label')}
+          </label>
+          <input
+            type="text"
+            value={account.label}
+            onChange={(e) => onChange({ label: e.target.value })}
+            placeholder={t('settings.accounts.labelPlaceholder')}
+            className="w-full rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900/50 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-colors"
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+            {t('settings.model')}
+          </label>
+          <input
+            type="text"
+            value={account.model}
+            onChange={(e) => onChange({ model: e.target.value })}
+            placeholder={DEFAULT_MODELS[account.provider]}
+            className="w-full rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900/50 px-3 py-2 font-mono text-sm text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-colors"
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+            {t('settings.apiKey')}
+          </label>
+          <div className="relative">
+            <input
+              type={keyVisible ? 'text' : 'password'}
+              value={account.apiKey}
+              onChange={(e) => onChange({ apiKey: e.target.value })}
+              placeholder={t('settings.apiKeyPlaceholder')}
+              className="w-full rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900/50 px-3 py-2 pr-10 font-mono text-sm text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-colors"
+            />
+            <button
+              type="button"
+              onClick={onToggleKey}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              tabIndex={-1}
+              aria-label={keyVisible ? 'Hide' : 'Show'}
+            >
+              {keyVisible ? <EyeOff size={14} /> : <Eye size={14} />}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ChainSlot({
+  badge,
+  accent,
+  value,
+  options,
+  onChange,
+  placeholder,
+  onRemove,
+  onMoveUp,
+  onMoveDown,
+  t,
+}: {
+  badge: string;
+  accent?: boolean;
+  value: string;
+  options: AiAccount[];
+  onChange: (v: string) => void;
+  placeholder: string;
+  onRemove?: () => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  t: (k: string) => string;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <span
+        className={`inline-flex items-center px-2 py-1 rounded-md text-[11px] font-semibold uppercase tracking-wide flex-shrink-0 w-24 justify-center ${
+          accent
+            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'
+            : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+        }`}
+      >
+        {badge}
+      </span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="flex-1 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900/50 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-colors"
+      >
+        <option value="">{placeholder}</option>
+        {options.map((a) => (
+          <option key={a.id} value={a.id}>
+            {a.label || providerBadge(a.provider)} · {providerBadge(a.provider)} · {a.model}
+          </option>
+        ))}
+      </select>
+      {onRemove && (
+        <>
+          <button
+            type="button"
+            onClick={onMoveUp}
+            disabled={!onMoveUp}
+            title={t('settings.chain.moveUp')}
+            className="p-1.5 rounded-md text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400 transition-colors"
+          >
+            <ArrowUp size={14} />
+          </button>
+          <button
+            type="button"
+            onClick={onMoveDown}
+            disabled={!onMoveDown}
+            title={t('settings.chain.moveDown')}
+            className="p-1.5 rounded-md text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400 transition-colors"
+          >
+            <ArrowDown size={14} />
+          </button>
+        </>
+      )}
+      {onRemove && (
+        <button
+          type="button"
+          onClick={onRemove}
+          title={t('settings.chain.remove')}
+          className="p-1.5 rounded-md text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors"
+        >
+          <X size={14} />
+        </button>
+      )}
     </div>
   );
 }

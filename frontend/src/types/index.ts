@@ -44,12 +44,19 @@ export interface AuthUser {
   username: string;
 }
 
+export type AiProviderType = 'openai' | 'gemini' | 'grok';
+
+export interface AiAccount {
+  id: string;
+  provider: AiProviderType;
+  label: string;
+  apiKey: string;
+  model: string;
+}
+
 export interface Settings {
-  aiProvider: string;
-  openaiApiKey: string;
-  geminiApiKey: string;
-  grokApiKey: string;
-  openaiModel: string;
-  geminiModel: string;
-  grokModel: string;
+  accounts: AiAccount[];
+  primaryAccountId: string;
+  fallbackAccountIds: string[];
+  ready: boolean;
 }

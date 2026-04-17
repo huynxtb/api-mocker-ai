@@ -123,17 +123,40 @@
   },
   "settings": {
     "title": "Cài đặt",
+    "subtitle": "Cấu hình tài khoản AI và đặt chuỗi chính + dự phòng để tạo dữ liệu.",
     "aiProvider": "Nhà cung cấp AI",
     "apiKey": "API Key",
     "apiKeyPlaceholder": "Nhập API key của bạn",
     "model": "Model",
     "modelPlaceholder": "VD: gpt-4o, gemini-1.5-pro, grok-2-latest",
     "missingKey": "Nhà cung cấp AI đang chọn chưa có API key. Vui lòng nhập API key bên dưới để bắt đầu tạo dữ liệu.",
+    "notReady": "Chưa có tài khoản AI chính. Vui lòng thêm tài khoản bên dưới và chọn làm chính.",
     "saveSuccess": "Lưu cài đặt thành công",
     "providers": {
       "openai": "OpenAI (ChatGPT)",
       "gemini": "Google Gemini",
       "grok": "Grok"
+    },
+    "accounts": {
+      "title": "Tài khoản AI",
+      "subtitle": "Thêm nhiều tài khoản cho mỗi nhà cung cấp. Không giới hạn số lượng.",
+      "add": "Thêm",
+      "empty": "Chưa có tài khoản nào. Thêm tài khoản AI đầu tiên bên dưới.",
+      "label": "Nhãn",
+      "labelPlaceholder": "VD: OpenAI cá nhân",
+      "delete": "Xoá tài khoản"
+    },
+    "chain": {
+      "title": "Chuỗi thực thi",
+      "subtitle": "Hệ thống gọi tài khoản chính trước, nếu lỗi sẽ chuyển lần lượt qua các tài khoản dự phòng.",
+      "primary": "Chính",
+      "fallback": "Dự phòng {{index}}",
+      "addFallback": "Thêm dự phòng",
+      "selectAccount": "— Chọn tài khoản —",
+      "noAccounts": "Thêm ít nhất một tài khoản ở trên để cấu hình chuỗi.",
+      "moveUp": "Lên",
+      "moveDown": "Xuống",
+      "remove": "Xoá"
     }
   }
 }

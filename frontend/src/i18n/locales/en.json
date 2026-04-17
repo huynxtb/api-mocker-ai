@@ -123,17 +123,40 @@
   },
   "settings": {
     "title": "Settings",
+    "subtitle": "Configure AI accounts and set a primary + fallback chain for data generation.",
     "aiProvider": "AI Provider",
     "apiKey": "API Key",
     "apiKeyPlaceholder": "Enter your API key",
     "model": "Model",
     "modelPlaceholder": "e.g. gpt-4o, gemini-1.5-pro, grok-2-latest",
     "missingKey": "The selected AI provider does not have an API key configured. Please enter your API key below to start generating data.",
+    "notReady": "No primary AI account is configured. Add an account below and select it as primary.",
     "saveSuccess": "Settings saved successfully",
     "providers": {
       "openai": "OpenAI (ChatGPT)",
       "gemini": "Google Gemini",
       "grok": "Grok"
+    },
+    "accounts": {
+      "title": "AI Accounts",
+      "subtitle": "Add one or more accounts per provider. You can have unlimited accounts.",
+      "add": "Add",
+      "empty": "No accounts yet. Add your first AI account below.",
+      "label": "Label",
+      "labelPlaceholder": "e.g. OpenAI personal",
+      "delete": "Delete account"
+    },
+    "chain": {
+      "title": "Execution Chain",
+      "subtitle": "Data generation tries the primary first, then falls back in order if it fails.",
+      "primary": "Primary",
+      "fallback": "Fallback {{index}}",
+      "addFallback": "Add fallback",
+      "selectAccount": "— Select account —",
+      "noAccounts": "Add at least one account above to configure the chain.",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "remove": "Remove"
     }
   }
 }
