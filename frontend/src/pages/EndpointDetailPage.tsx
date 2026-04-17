@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { endpointApi, projectApi, settingsApi } from '../services/api';
@@ -146,6 +146,9 @@ export default function EndpointDetailPage() {
   // Validation
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Skip auto-detect on the initial load so stored isList/paginationConfig aren't overwritten.
+  const initialLoadDone = useRef(false);
+
   const loadData = useCallback(async () => {
     try {
       const [, epRes] = await Promise.all([
@@ -179,8 +182,12 @@ export default function EndpointDetailPage() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  // Auto-detect paging when response structure changes
+  // Auto-detect paging only when the user edits the response structure (not on initial load)
   useEffect(() => {
+    if (!initialLoadDone.current) {
+      if (!loading) initialLoadDone.current = true;
+      return;
+    }
     if (responseStructure.trim()) {
       const result = detectPagination(responseStructure);
       if (result?.detected && !isList) {
@@ -190,7 +197,7 @@ export default function EndpointDetailPage() {
         setPagLimitKey(result.limitKey);
       }
     }
-  }, [responseStructure]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [responseStructure, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function validate(): boolean {
     const errs: Record<string, string> = {};
