@@ -1,1 +1,0 @@
-Implement feature allow user can delete all APIs belong to the  resource
