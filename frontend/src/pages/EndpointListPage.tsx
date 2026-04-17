@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
 import { projectApi, endpointApi } from '../services/api';
+import { useAlert } from '../context/AlertContext';
 import { Project, ApiEndpoint } from '../types';
 import {
   Plus,
@@ -41,6 +41,7 @@ const METHOD_WIDTH: Record<string, string> = {
 
 export default function EndpointListPage() {
   const { t } = useTranslation();
+  const { showAlert } = useAlert();
   const { projectId } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
@@ -65,7 +66,7 @@ export default function EndpointListPage() {
       setProject(projRes.data.data);
       setEndpoints(epRes.data.data);
     } catch {
-      toast.error(t('common.error'));
+      showAlert('error', t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -75,10 +76,10 @@ export default function EndpointListPage() {
     if (!deleteId) return;
     try {
       await endpointApi.delete(projectId!, deleteId);
-      toast.success(t('endpoint.deleteSuccess'));
+      showAlert('success', t('endpoint.deleteSuccess'));
       setEndpoints(endpoints.filter((e) => e._id !== deleteId));
     } catch {
-      toast.error(t('common.error'));
+      showAlert('error', t('common.error'));
     }
     setDeleteId(null);
   }
@@ -87,7 +88,7 @@ export default function EndpointListPage() {
     if (!deleteBasePath) return;
     try {
       await endpointApi.deleteResource(projectId!, deleteBasePath);
-      toast.success(t('endpoint.deleteResourceSuccess'));
+      showAlert('success', t('endpoint.deleteResourceSuccess'));
       setEndpoints(endpoints.filter((e) => e.basePath !== deleteBasePath));
       setCollapsedGroups((prev) => {
         const next = { ...prev };
@@ -95,7 +96,7 @@ export default function EndpointListPage() {
         return next;
       });
     } catch {
-      toast.error(t('common.error'));
+      showAlert('error', t('common.error'));
     }
     setDeleteBasePath(null);
   }

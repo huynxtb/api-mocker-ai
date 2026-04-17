@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
 import { projectApi } from '../services/api';
+import { useAlert } from '../context/AlertContext';
 import { Project } from '../types';
 import { Trash2, Pencil, ArrowRight, Plus, Loader2, FolderOpen, Search } from 'lucide-react';
 import ConfirmDialog from '../components/common/ConfirmDialog';
@@ -11,6 +11,7 @@ import IconButton from '../components/common/IconButton';
 
 export default function ProjectListPage() {
   const { t } = useTranslation();
+  const { showAlert } = useAlert();
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +27,7 @@ export default function ProjectListPage() {
       const res = await projectApi.list();
       setProjects(res.data.data);
     } catch {
-      toast.error(t('common.error'));
+      showAlert('error', t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -36,10 +37,10 @@ export default function ProjectListPage() {
     if (!deleteId) return;
     try {
       await projectApi.delete(deleteId);
-      toast.success(t('project.deleteSuccess'));
+      showAlert('success', t('project.deleteSuccess'));
       setProjects(projects.filter((p) => p._id !== deleteId));
     } catch {
-      toast.error(t('common.error'));
+      showAlert('error', t('common.error'));
     }
     setDeleteId(null);
   }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
 import { endpointApi } from '../../services/api';
+import { useAlert } from '../../context/AlertContext';
 import { X, Plus } from 'lucide-react';
 import Button from '../common/Button';
 import IconButton from '../common/IconButton';
@@ -14,6 +14,7 @@ interface Props {
 
 export default function CreateResourceModal({ projectId, onClose, onCreated }: Props) {
   const { t } = useTranslation();
+  const { showAlert } = useAlert();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [baseEndpoint, setBaseEndpoint] = useState('');
@@ -38,10 +39,10 @@ export default function CreateResourceModal({ projectId, onClose, onCreated }: P
     setLoading(true);
     try {
       await endpointApi.create(projectId, { name, description, baseEndpoint, isCustomEndpoint: isCustom });
-      toast.success(t('endpoint.createSuccess'));
+      showAlert('success', t('endpoint.createSuccess'));
       onCreated();
     } catch {
-      toast.error(t('common.error'));
+      showAlert('error', t('common.error'));
     } finally {
       setLoading(false);
     }

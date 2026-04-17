@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
 import { Save } from 'lucide-react';
+import { useAlert } from '../context/AlertContext';
 import { settingsApi } from '../services/api';
 import Button from '../components/common/Button';
 
@@ -43,6 +43,7 @@ const AI_PROVIDERS = [
 
 export default function SettingsPage() {
   const { t } = useTranslation();
+  const { showAlert } = useAlert();
   const [aiProvider, setAiProvider] = useState('openai');
   const [openaiApiKey, setOpenaiApiKey] = useState('');
   const [geminiApiKey, setGeminiApiKey] = useState('');
@@ -78,9 +79,9 @@ export default function SettingsPage() {
     setSaving(true);
     try {
       await settingsApi.update({ aiProvider, openaiApiKey, geminiApiKey, grokApiKey, openaiModel, geminiModel, grokModel });
-      toast.success(t('settings.saveSuccess'));
+      showAlert('success', t('settings.saveSuccess'));
     } catch {
-      toast.error(t('common.error'));
+      showAlert('error', t('common.error'));
     } finally {
       setSaving(false);
     }

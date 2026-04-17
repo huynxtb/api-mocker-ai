@@ -1,8 +1,8 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
 import { KeyRound, Save, X } from 'lucide-react';
+import { useAlert } from '../context/AlertContext';
 import { authApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import AuthInput from '../components/auth/AuthInput';
@@ -16,6 +16,7 @@ const LockIcon = (
 
 export default function ChangePasswordPage() {
   const { t } = useTranslation();
+  const { showAlert } = useAlert();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [currentPassword, setCurrentPassword] = useState('');
@@ -26,24 +27,24 @@ export default function ChangePasswordPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (newPassword !== confirm) {
-      toast.error(t('auth.passwordMismatch'));
+      showAlert('error', t('auth.passwordMismatch'));
       return;
     }
     if (newPassword.length < 6) {
-      toast.error(t('auth.passwordTooShort'));
+      showAlert('error', t('auth.passwordTooShort'));
       return;
     }
     setSubmitting(true);
     try {
       await authApi.changePassword({ currentPassword, newPassword });
-      toast.success(t('auth.changePasswordSuccess'));
+      showAlert('success', t('auth.changePasswordSuccess'));
       await logout();
       navigate('/login');
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
         t('common.error');
-      toast.error(msg);
+      showAlert('error', msg);
     } finally {
       setSubmitting(false);
     }

@@ -118,6 +118,7 @@ const METHOD_COLORS: Record<string, string> = {
 
 export default function EndpointDetailPage() {
   const { t } = useTranslation();
+  const { showAlert } = useAlert();
   const { projectId, endpointId } = useParams();
   const navigate = useNavigate();
   const [endpoint, setEndpoint] = useState<ApiEndpoint | null>(null);
@@ -170,7 +171,7 @@ export default function EndpointDetailPage() {
         setPagDefaultLimit(ep.paginationConfig.defaultLimit || 10);
       }
     } catch {
-      toast.error(t('common.error'));
+      showAlert('error', t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -227,12 +228,12 @@ export default function EndpointDetailPage() {
           grok: s.hasGrokKey,
         };
         if (!providerKeyMap[s.aiProvider]) {
-          toast.error(t('endpoint.configRequired'));
+          showAlert('error', t('endpoint.configRequired'));
           navigate('/settings');
           return;
         }
       } catch {
-        toast.error(t('endpoint.configRequired'));
+        showAlert('error', t('endpoint.configRequired'));
         navigate('/settings');
         return;
       }
@@ -269,13 +270,13 @@ export default function EndpointDetailPage() {
 
       const res = await endpointApi.generate(projectId!, endpointId!, payload);
       setEndpoint(res.data.data);
-      toast.success(
+      showAlert('success',
         responseStructure.trim()
           ? t('endpoint.generateSuccess')
           : t('endpoint.updateSuccess'),
       );
     } catch {
-      toast.error(t('common.error'));
+      showAlert('error', t('common.error'));
     } finally {
       setSubmitting(false);
     }
@@ -285,10 +286,10 @@ export default function EndpointDetailPage() {
     setDeleting(true);
     try {
       await endpointApi.delete(projectId!, endpointId!);
-      toast.success(t('endpoint.deleteSuccess'));
+      showAlert('success', t('endpoint.deleteSuccess'));
       navigate(`/projects/${projectId}/endpoints`);
     } catch {
-      toast.error(t('common.error'));
+      showAlert('error', t('common.error'));
       setDeleting(false);
       setDeleteOpen(false);
     }
@@ -297,7 +298,7 @@ export default function EndpointDetailPage() {
   function copyUrl() {
     const url = `${window.location.origin}/mock/${previewPath}`;
     navigator.clipboard.writeText(url);
-    toast.success(t('endpoint.copyUrl'));
+    showAlert('success', t('endpoint.copyUrl'));
   }
 
   // Compute live preview path from endpoint basePath + current customEndpoint
@@ -741,4 +742,6 @@ export default function EndpointDetailPage() {
           </div>
         </div>
       )}
-   
+    </div>
+  );
+}

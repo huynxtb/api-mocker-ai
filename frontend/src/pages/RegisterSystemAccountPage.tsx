@@ -1,8 +1,8 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
 import { UserPlus } from 'lucide-react';
+import { useAlert } from '../context/AlertContext';
 import { useAuth } from '../context/AuthContext';
 import AuthShell from '../components/auth/AuthShell';
 import AuthInput from '../components/auth/AuthInput';
@@ -21,6 +21,7 @@ const LockIcon = (
 
 export default function RegisterSystemAccountPage() {
   const { t } = useTranslation();
+  const { showAlert } = useAlert();
   const navigate = useNavigate();
   const { status, register } = useAuth();
   const [username, setUsername] = useState('');
@@ -34,23 +35,23 @@ export default function RegisterSystemAccountPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (password !== confirm) {
-      toast.error(t('auth.passwordMismatch'));
+      showAlert('error', t('auth.passwordMismatch'));
       return;
     }
     if (password.length < 6) {
-      toast.error(t('auth.passwordTooShort'));
+      showAlert('error', t('auth.passwordTooShort'));
       return;
     }
     setSubmitting(true);
     try {
       await register(username, password);
-      toast.success(t('auth.registerSuccess'));
+      showAlert('success', t('auth.registerSuccess'));
       navigate('/');
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
         t('auth.registerFailed');
-      toast.error(msg);
+      showAlert('error', msg);
     } finally {
       setSubmitting(false);
     }

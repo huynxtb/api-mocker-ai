@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
 import { X, FilePlus2, Eye, Plus, Pencil, Trash2, Wrench } from 'lucide-react';
 import Button from '../common/Button';
 import IconButton from '../common/IconButton';
 import { endpointApi } from '../../services/api';
+import { useAlert } from '../../context/AlertContext';
 
 const METHOD_ICONS: Record<string, typeof Eye> = {
   GET: Eye,
@@ -33,6 +33,7 @@ const METHOD_COLORS: Record<string, string> = {
 
 export default function AddEndpointModal({ projectId, basePaths, onClose, onAdded }: Props) {
   const { t } = useTranslation();
+  const { showAlert } = useAlert();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [basePath, setBasePath] = useState(basePaths[0] || '');
@@ -54,10 +55,10 @@ export default function AddEndpointModal({ projectId, basePaths, onClose, onAdde
         httpMethod,
         statusCode,
       });
-      toast.success(t('endpoint.createSuccess'));
+      showAlert('success', t('endpoint.createSuccess'));
       onAdded();
     } catch {
-      toast.error(t('common.error'));
+      showAlert('error', t('common.error'));
     } finally {
       setLoading(false);
     }
