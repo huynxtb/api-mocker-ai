@@ -4,5 +4,5 @@ dist/
 *.log
 .DS_Store
 .claude/settings.local.json
-docs/bugs/*
-docs/features/*
+docs/desc/bugs/*
+docs/desc/features/*
