@@ -12,6 +12,7 @@
     "back": "Quay lại",
     "actions": "Thao tác",
     "confirm": "Xác nhận",
+    "confirmTitle": "Bạn có chắc chắn?",
     "loading": "Đang tải...",
     "noData": "Không có dữ liệu",
     "required": "Trường này bắt buộc",
@@ -23,7 +24,13 @@
     "status": "Trạng thái",
     "createdAt": "Ngày tạo",
     "yes": "Có",
-    "no": "Không"
+    "no": "Không",
+    "optional": "Tuỳ chọn",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép",
+    "invalidJson": "JSON không hợp lệ",
+    "invalidStatusCode": "Status code không hợp lệ",
+    "giveStar": "Tặng mình một sao"
   },
   "project": {
     "title": "Dự án",
@@ -39,7 +46,10 @@
     "createSuccess": "Tạo dự án thành công",
     "updateSuccess": "Cập nhật dự án thành công",
     "deleteSuccess": "Xoá dự án thành công",
-    "viewEndpoints": "Xem Endpoints"
+    "viewEndpoints": "Xem Endpoints",
+    "createSubtitle": "Điền thông tin để tạo dự án mock API mới.",
+    "editSubtitle": "Cập nhật thông tin dự án bên dưới.",
+    "noDescription": "Không có mô tả"
   },
   "endpoint": {
     "title": "API Endpoints",
@@ -92,7 +102,30 @@
     "pagDefaultLimit": "Giới hạn mặc định",
     "configRequired": "Vui lòng cấu hình API key của nhà cung cấp AI trước",
     "collapseAll": "Thu gọn tất cả",
-    "expandAll": "Mở rộng tất cả"
+    "expandAll": "Mở rộng tất cả",
+    "loadingDetail": "Đang tải endpoint…",
+    "configSection": "Cấu hình Endpoint",
+    "responseSection": "Response",
+    "responseStructureHint": "— cấu trúc JSON",
+    "isListDescription": "Bật để sinh danh sách các item kèm hỗ trợ phân trang tuỳ chọn",
+    "editNamePlaceholder": "VD: Danh sách người dùng, Duyệt người dùng",
+    "customEndpointPlaceholder": "VD: list, :id, approve",
+    "addNamePlaceholder": "VD: Approve",
+    "addCustomEndpointPlaceholder": "VD: approve",
+    "pagDataPathPlaceholder": "VD: result.data, data, items",
+    "dataReady": "Đã có dữ liệu",
+    "dataEmpty": "Chưa có dữ liệu",
+    "export": "Xuất",
+    "exportTitle": "Xuất Postman Collection",
+    "exportSubtitle": "Tải các endpoint dưới dạng Postman Collection v2.1.",
+    "exportAll": "Xuất toàn bộ endpoint",
+    "exportAllDesc": "Bao gồm tất cả endpoint của dự án ({{count}} endpoint).",
+    "exportSelected": "Xuất resource đã chọn",
+    "exportSelectedDesc": "Chọn các API resource muốn xuất.",
+    "exportSuccess": "Đã tải collection",
+    "selectAll": "Chọn tất cả",
+    "deselectAll": "Bỏ chọn tất cả",
+    "resourcesCount": "{{count}} resource"
   },
   "auth": {
     "loginTitle": "Đăng nhập",

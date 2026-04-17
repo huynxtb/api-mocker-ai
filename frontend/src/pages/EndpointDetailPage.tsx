@@ -203,14 +203,14 @@ export default function EndpointDetailPage() {
     const errs: Record<string, string> = {};
     if (!name.trim()) errs.name = t('common.required');
     if (!httpMethod) errs.httpMethod = t('common.required');
-    if (!statusCode || statusCode < 100 || statusCode > 599) errs.statusCode = 'Invalid status code';
+    if (!statusCode || statusCode < 100 || statusCode > 599) errs.statusCode = t('common.invalidStatusCode');
 
     // GET with body-capable status requires response structure; other methods validate JSON if provided
     if (statusCodeHasBody(statusCode) && responseStructure.trim()) {
       try {
         JSON.parse(responseStructure);
       } catch {
-        errs.responseStructure = 'Invalid JSON';
+        errs.responseStructure = t('common.invalidJson');
       }
     } else if (httpMethod === 'GET' && statusCodeHasBody(statusCode) && !responseStructure.trim()) {
       errs.responseStructure = t('common.required');
@@ -331,7 +331,7 @@ export default function EndpointDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-3">
         <Loader2 className="animate-spin text-indigo-500" size={36} />
-        <p className="text-sm text-gray-500 dark:text-gray-400 animate-pulse">Loading endpoint…</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 animate-pulse">{t('endpoint.loadingDetail')}</p>
       </div>
     );
   }
@@ -406,7 +406,7 @@ export default function EndpointDetailPage() {
 
         {/* Section: Endpoint Config */}
         <div className="px-6 py-5">
-          <p className={sectionLabel}>Endpoint Config</p>
+          <p className={sectionLabel}>{t('endpoint.configSection')}</p>
           <div className="space-y-4">
             {/* Name & Description */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -418,6 +418,7 @@ export default function EndpointDetailPage() {
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); setErrors((p) => ({ ...p, name: '' })); }}
+                  placeholder={t('endpoint.editNamePlaceholder')}
                   className={`${inputBase} ${inputBorder('name')}`}
                 />
                 {errors.name && (
@@ -487,7 +488,7 @@ export default function EndpointDetailPage() {
                   type="text"
                   value={customEndpoint}
                   onChange={(e) => setCustomEndpoint(e.target.value.replace(/^\/+/, ''))}
-                  placeholder="e.g. list, :id, approve"
+                  placeholder={t('endpoint.customEndpointPlaceholder')}
                   className={`${inputBase} border-gray-200 dark:border-gray-700 focus:ring-indigo-500/40 font-mono`}
                 />
               </div>
@@ -498,14 +499,14 @@ export default function EndpointDetailPage() {
         {/* Section: Response */}
         {statusCodeHasBody(statusCode) && (
           <div className="px-6 py-5">
-            <p className={sectionLabel}>Response</p>
+            <p className={sectionLabel}>{t('endpoint.responseSection')}</p>
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
                   {t('endpoint.responseStructure')}
                   {httpMethod === 'GET' && <span className="text-red-400 ml-0.5">*</span>}
                   <span className="ml-1.5 text-gray-400 dark:text-gray-500 font-normal normal-case tracking-normal">
-                    — JSON structure
+                    {t('endpoint.responseStructureHint')}
                   </span>
                 </label>
                 <div className={`rounded-xl overflow-hidden border transition-shadow ${
@@ -548,14 +549,14 @@ export default function EndpointDetailPage() {
         {/* Section: Pagination */}
         {statusCodeHasBody(statusCode) && (
           <div className="px-6 py-5">
-            <p className={sectionLabel}>Pagination</p>
+            <p className={sectionLabel}>{t('endpoint.pagination')}</p>
             <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30 overflow-hidden">
               {/* Toggle row */}
               <div className="flex items-center justify-between px-4 py-3.5">
                 <div>
                   <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('endpoint.isList')}</p>
                   <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                    Enable to generate a list of items with optional pagination support
+                    {t('endpoint.isListDescription')}
                   </p>
                 </div>
                 <button
@@ -603,14 +604,14 @@ export default function EndpointDetailPage() {
                       type="text"
                       value={pagDataPath}
                       onChange={(e) => setPagDataPath(e.target.value)}
-                      placeholder="e.g. result.data, data, items"
+                      placeholder={t('endpoint.pagDataPathPlaceholder')}
                       className={`${inputBase} border-gray-200 dark:border-gray-700 focus:ring-indigo-500/40 font-mono max-w-xs`}
                     />
                   </div>
 
                   <div>
                     <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-2.5">
-                      Paging Params
+                      {t('endpoint.pagingParams')}
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                       <div>
@@ -662,7 +663,7 @@ export default function EndpointDetailPage() {
           <div className="px-6 py-5">
             <details className="group">
               <summary className="flex items-center justify-between cursor-pointer select-none list-none">
-                <p className={sectionLabel + ' mb-0'}>Advanced Options</p>
+                <p className={sectionLabel + ' mb-0'}>{t('endpoint.advancedOptions')}</p>
                 <ChevronDown
                   size={15}
                   className="text-gray-400 dark:text-gray-500 transition-transform duration-200 group-open:rotate-180"

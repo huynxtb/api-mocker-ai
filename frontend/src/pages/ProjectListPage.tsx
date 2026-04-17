@@ -211,6 +211,7 @@ function ProjectCard({ project, onView, onEdit, onDelete, viewLabel }: ProjectCa
           aria-label={t('common.delete')}
           icon={<Trash2 size={14} />}
           onClick={(e) => { e.stopPropagation(); onDelete(); }}
+          className="!text-red-500 dark:!text-red-400"
         />
       </div>
     </div>

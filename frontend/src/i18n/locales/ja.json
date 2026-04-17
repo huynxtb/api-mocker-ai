@@ -12,6 +12,7 @@
     "back": "戻る",
     "actions": "操作",
     "confirm": "確認",
+    "confirmTitle": "よろしいですか？",
     "loading": "読み込み中...",
     "noData": "データがありません",
     "required": "この項目は必須です",
@@ -23,7 +24,13 @@
     "status": "ステータス",
     "createdAt": "作成日",
     "yes": "はい",
-    "no": "いいえ"
+    "no": "いいえ",
+    "optional": "任意",
+    "copy": "コピー",
+    "copied": "コピーしました",
+    "invalidJson": "無効なJSON",
+    "invalidStatusCode": "無効なステータスコード",
+    "giveStar": "スターをください"
   },
   "project": {
     "title": "プロジェクト",
@@ -39,7 +46,10 @@
     "createSuccess": "プロジェクトが作成されました",
     "updateSuccess": "プロジェクトが更新されました",
     "deleteSuccess": "プロジェクトが削除されました",
-    "viewEndpoints": "エンドポイント表示"
+    "viewEndpoints": "エンドポイント表示",
+    "createSubtitle": "新しいモックAPIプロジェクトを作成するための情報を入力してください。",
+    "editSubtitle": "以下でプロジェクトの詳細を更新します。",
+    "noDescription": "説明なし"
   },
   "endpoint": {
     "title": "APIエンドポイント",
@@ -92,7 +102,30 @@
     "pagDefaultLimit": "デフォルト件数",
     "configRequired": "先にAIプロバイダーのAPIキーを設定してください",
     "collapseAll": "すべて折りたたむ",
-    "expandAll": "すべて展開"
+    "expandAll": "すべて展開",
+    "loadingDetail": "エンドポイントを読み込み中…",
+    "configSection": "エンドポイント設定",
+    "responseSection": "レスポンス",
+    "responseStructureHint": "— JSON構造",
+    "isListDescription": "有効にするとページネーション対応のリストデータを生成します",
+    "editNamePlaceholder": "例: ユーザー一覧, ユーザー承認",
+    "customEndpointPlaceholder": "例: list, :id, approve",
+    "addNamePlaceholder": "例: Approve",
+    "addCustomEndpointPlaceholder": "例: approve",
+    "pagDataPathPlaceholder": "例: result.data, data, items",
+    "dataReady": "データあり",
+    "dataEmpty": "データなし",
+    "export": "エクスポート",
+    "exportTitle": "Postmanコレクションをエクスポート",
+    "exportSubtitle": "エンドポイントをPostman v2.1コレクションとしてダウンロードします。",
+    "exportAll": "すべてのエンドポイントをエクスポート",
+    "exportAllDesc": "このプロジェクトのすべてのエンドポイントを含めます（合計 {{count}} 件）。",
+    "exportSelected": "選択したリソースをエクスポート",
+    "exportSelectedDesc": "含めるAPIリソースを選択します。",
+    "exportSuccess": "コレクションをダウンロードしました",
+    "selectAll": "すべて選択",
+    "deselectAll": "すべて解除",
+    "resourcesCount": "{{count}} 件のリソース"
   },
   "auth": {
     "loginTitle": "サインイン",

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { projectApi, endpointApi } from '../services/api';
@@ -16,10 +16,13 @@ import {
   Layers,
   FilePlus2,
   FolderPlus,
+  Copy,
+  Download,
 } from 'lucide-react';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import CreateResourceModal from '../components/endpoint/CreateResourceModal';
 import AddEndpointModal from '../components/endpoint/AddEndpointModal';
+import ExportCollectionModal from '../components/endpoint/ExportCollectionModal';
 import Button from '../components/common/Button';
 import IconButton from '../components/common/IconButton';
 
@@ -51,7 +54,9 @@ export default function EndpointListPage() {
   const [deleteBasePath, setDeleteBasePath] = useState<string | null>(null);
   const [showCreateResource, setShowCreateResource] = useState(false);
   const [showAddEndpoint, setShowAddEndpoint] = useState(false);
+  const [showExport, setShowExport] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+  const initialCollapseDone = useRef(false);
 
   useEffect(() => {
     loadData();
@@ -63,8 +68,21 @@ export default function EndpointListPage() {
         projectApi.get(projectId!),
         endpointApi.list(projectId!),
       ]);
+      const epList: ApiEndpoint[] = epRes.data.data;
       setProject(projRes.data.data);
-      setEndpoints(epRes.data.data);
+      setEndpoints(epList);
+
+      // Auto-collapse all groups on first load when there are multiple resources.
+      // Skipped on subsequent reloads so re-collapse doesn't overwrite user's manual expands.
+      if (!initialCollapseDone.current) {
+        initialCollapseDone.current = true;
+        const basePaths = Array.from(new Set(epList.map((ep) => ep.basePath)));
+        if (basePaths.length > 1) {
+          const init: Record<string, boolean> = {};
+          basePaths.forEach((bp) => { init[bp] = true; });
+          setCollapsedGroups(init);
+        }
+      }
     } catch {
       showAlert('error', t('common.error'));
     } finally {
@@ -109,6 +127,13 @@ export default function EndpointListPage() {
   function handleEndpointAdded() {
     setShowAddEndpoint(false);
     loadData();
+  }
+
+  function copyEndpointUrl(ep: ApiEndpoint, e: React.MouseEvent) {
+    e.stopPropagation();
+    const url = `${window.location.origin}/mock/${ep.fullPath}`;
+    navigator.clipboard.writeText(url);
+    showAlert('success', t('endpoint.copyUrl'));
   }
 
   const grouped = endpoints.reduce<Record<string, ApiEndpoint[]>>((acc, ep) => {
@@ -166,7 +191,16 @@ export default function EndpointListPage() {
         <div className="flex items-center gap-2 shrink-0">
           {hasResources && (
             <Button
-              variant="outline"
+              variant="success"
+              icon={<Download size={15} />}
+              onClick={() => setShowExport(true)}
+            >
+              {t('endpoint.export')}
+            </Button>
+          )}
+          {hasResources && (
+            <Button
+              variant="info"
               icon={<FilePlus2 size={15} />}
               onClick={() => setShowAddEndpoint(true)}
             >
@@ -281,9 +315,18 @@ export default function EndpointListPage() {
                         <span className="shrink-0 flex items-center gap-1.5">
                           <span
                             className={`inline-block w-2 h-2 rounded-full ${ep.generatedData ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'}`}
-                            title={ep.generatedData ? 'Data ready' : 'No data'}
+                            title={ep.generatedData ? t('endpoint.dataReady') : t('endpoint.dataEmpty')}
                           />
                         </span>
+
+                        <IconButton
+                          size="sm"
+                          tone="primary"
+                          aria-label={t('endpoint.copyUrl')}
+                          title={t('endpoint.copyUrl')}
+                          icon={<Copy size={14} />}
+                          onClick={(e) => copyEndpointUrl(ep, e)}
+                        />
 
                         <IconButton
                           size="sm"
@@ -334,6 +377,14 @@ export default function EndpointListPage() {
           basePaths={Object.keys(grouped)}
           onClose={() => setShowAddEndpoint(false)}
           onAdded={handleEndpointAdded}
+        />
+      )}
+
+      {showExport && project && (
+        <ExportCollectionModal
+          project={project}
+          endpoints={endpoints}
+          onClose={() => setShowExport(false)}
         />
       )}
     </div>

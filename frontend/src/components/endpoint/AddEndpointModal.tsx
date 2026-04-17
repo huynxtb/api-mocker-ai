@@ -95,7 +95,7 @@ export default function AddEndpointModal({ projectId, basePaths, onClose, onAdde
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Approve"
+              placeholder={t('endpoint.addNamePlaceholder')}
               required
               className="w-full px-3.5 py-2.5 rounded-lg text-sm text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
@@ -142,7 +142,7 @@ export default function AddEndpointModal({ projectId, basePaths, onClose, onAdde
               type="text"
               value={customEndpoint}
               onChange={(e) => setCustomEndpoint(e.target.value.replace(/^\/+/, ''))}
-              placeholder="e.g. approve"
+              placeholder={t('endpoint.addCustomEndpointPlaceholder')}
               className="w-full px-3.5 py-2.5 rounded-lg font-mono text-sm text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
           </div>

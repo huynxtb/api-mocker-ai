@@ -12,6 +12,7 @@
     "back": "Back",
     "actions": "Actions",
     "confirm": "Confirm",
+    "confirmTitle": "Are you sure?",
     "loading": "Loading...",
     "noData": "No data found",
     "required": "This field is required",
@@ -23,7 +24,13 @@
     "status": "Status",
     "createdAt": "Created at",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "optional": "Optional",
+    "copy": "Copy",
+    "copied": "Copied",
+    "invalidJson": "Invalid JSON",
+    "invalidStatusCode": "Invalid status code",
+    "giveStar": "Give me a star"
   },
   "project": {
     "title": "Projects",
@@ -39,7 +46,10 @@
     "createSuccess": "Project created successfully",
     "updateSuccess": "Project updated successfully",
     "deleteSuccess": "Project deleted successfully",
-    "viewEndpoints": "View Endpoints"
+    "viewEndpoints": "View Endpoints",
+    "createSubtitle": "Fill in the details to create a new mock API project.",
+    "editSubtitle": "Update the project details below.",
+    "noDescription": "No description"
   },
   "endpoint": {
     "title": "API Endpoints",
@@ -92,7 +102,30 @@
     "pagDefaultLimit": "Default limit",
     "configRequired": "Please configure your AI provider API key first",
     "collapseAll": "Collapse All",
-    "expandAll": "Expand All"
+    "expandAll": "Expand All",
+    "loadingDetail": "Loading endpoint…",
+    "configSection": "Endpoint Config",
+    "responseSection": "Response",
+    "responseStructureHint": "— JSON structure",
+    "isListDescription": "Enable to generate a list of items with optional pagination support",
+    "editNamePlaceholder": "e.g. List users, Approve user",
+    "customEndpointPlaceholder": "e.g. list, :id, approve",
+    "addNamePlaceholder": "e.g. Approve",
+    "addCustomEndpointPlaceholder": "e.g. approve",
+    "pagDataPathPlaceholder": "e.g. result.data, data, items",
+    "dataReady": "Data ready",
+    "dataEmpty": "No data",
+    "export": "Export",
+    "exportTitle": "Export Postman Collection",
+    "exportSubtitle": "Download your endpoints as a Postman v2.1 collection.",
+    "exportAll": "Export all endpoints",
+    "exportAllDesc": "Include every endpoint in this project ({{count}} total).",
+    "exportSelected": "Export selected resources",
+    "exportSelectedDesc": "Pick which API resources to include.",
+    "exportSuccess": "Collection downloaded",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "resourcesCount": "{{count}} resources"
   },
   "auth": {
     "loginTitle": "Sign In",

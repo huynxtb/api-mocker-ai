@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { KeyRound, LogOut, Menu, X, Github } from 'lucide-react';
+import { KeyRound, LogOut, Menu, X, Github, Star } from 'lucide-react';
 import LanguageSwitcher from '../common/LanguageSwitcher';
 import ThemeToggle from '../common/ThemeToggle';
 import { useAuth } from '../../context/AuthContext';
@@ -195,17 +195,15 @@ export default function Layout() {
 
       {/* Footer */}
       <footer className="border-t border-gray-200/60 dark:border-gray-700/40 bg-white/60 dark:bg-gray-900/60 py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <span className="text-xs text-gray-400 dark:text-gray-600 font-medium tracking-tight">
-            API Mocker AI
-          </span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center">
           <a
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors group"
           >
-            github.com/huynxtb/api-mocker-ai
+            <Star size={13} className="fill-current transition-transform group-hover:scale-110" />
+            {t('common.giveStar')}
           </a>
         </div>
       </footer>

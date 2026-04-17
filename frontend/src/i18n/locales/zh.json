@@ -12,6 +12,7 @@
     "back": "返回",
     "actions": "操作",
     "confirm": "确认",
+    "confirmTitle": "确定吗？",
     "loading": "加载中...",
     "noData": "暂无数据",
     "required": "此字段为必填项",
@@ -23,7 +24,13 @@
     "status": "状态",
     "createdAt": "创建时间",
     "yes": "是",
-    "no": "否"
+    "no": "否",
+    "optional": "可选",
+    "copy": "复制",
+    "copied": "已复制",
+    "invalidJson": "JSON 无效",
+    "invalidStatusCode": "状态码无效",
+    "giveStar": "点个 Star"
   },
   "project": {
     "title": "项目",
@@ -39,7 +46,10 @@
     "createSuccess": "项目创建成功",
     "updateSuccess": "项目更新成功",
     "deleteSuccess": "项目删除成功",
-    "viewEndpoints": "查看端点"
+    "viewEndpoints": "查看端点",
+    "createSubtitle": "填写以下信息创建新的 Mock API 项目。",
+    "editSubtitle": "在下方更新项目信息。",
+    "noDescription": "暂无描述"
   },
   "endpoint": {
     "title": "API 端点",
@@ -92,7 +102,30 @@
     "pagDefaultLimit": "默认每页数量",
     "configRequired": "请先配置 AI 提供商的 API 密钥",
     "collapseAll": "全部折叠",
-    "expandAll": "全部展开"
+    "expandAll": "全部展开",
+    "loadingDetail": "正在加载端点…",
+    "configSection": "端点配置",
+    "responseSection": "响应",
+    "responseStructureHint": "— JSON 结构",
+    "isListDescription": "开启后生成列表数据并可选支持分页",
+    "editNamePlaceholder": "例如：用户列表, 审批用户",
+    "customEndpointPlaceholder": "例如：list, :id, approve",
+    "addNamePlaceholder": "例如：Approve",
+    "addCustomEndpointPlaceholder": "例如：approve",
+    "pagDataPathPlaceholder": "例如：result.data, data, items",
+    "dataReady": "数据就绪",
+    "dataEmpty": "暂无数据",
+    "export": "导出",
+    "exportTitle": "导出 Postman 集合",
+    "exportSubtitle": "将端点下载为 Postman v2.1 集合。",
+    "exportAll": "导出全部端点",
+    "exportAllDesc": "包含项目中的所有端点（共 {{count}} 个）。",
+    "exportSelected": "导出所选资源",
+    "exportSelectedDesc": "选择要包含的 API 资源。",
+    "exportSuccess": "集合已下载",
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "resourcesCount": "{{count}} 个资源"
   },
   "auth": {
     "loginTitle": "登录",
