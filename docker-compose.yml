@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: apimocker-mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - apimocker-net
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: apimocker-backend
+    ports:
+      - '${PORT}:${PORT}'
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    networks:
+      - apimocker-net
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - BACKEND_PORT=${PORT}
+    container_name: apimocker-frontend
+    ports:
+      - '${FRONTEND_PORT}:80'
+    depends_on:
+      - backend
+    networks:
+      - apimocker-net
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+
+networks:
+  apimocker-net:
+    driver: bridge
