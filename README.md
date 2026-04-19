@@ -12,6 +12,18 @@ That's it. No fixtures, no Faker setup, no Postman juggling. The data looks like
 
 Built for frontend teams waiting on the backend.
 
+### How you'll actually use it
+
+The app has two parts: a **backend** that stores your projects, talks to the AI, and serves the mock API — and a **frontend** (admin UI) where you click around and design endpoints.
+
+You don't have to build or customize the frontend. It's ready out of the box. The only thing you set is **where the backend lives** — one URL. After that, the UI connects, you log in, create projects, generate data, and you're done.
+
+- Running everything on your laptop? The default URL already works.
+- Deployed the backend to a server? Point the frontend at that server's URL — one env var — and reload.
+- Moving the backend later? Change the URL again. The frontend doesn't care.
+
+In short: **set up the backend once, then just tell the frontend where to find it.** Everything else — auth, forms, endpoint management, AI generation, the mock API itself — is already wired up.
+
 ## Demo
 
 [![Watch the demo](https://img.youtube.com/vi/ePYLDd19MjA/maxresdefault.jpg)](https://youtu.be/ePYLDd19MjA)
@@ -62,21 +74,23 @@ Short version: JSON Server / Postman make you write the data. Mockoon / WireMock
 Needs Node 18+ and MongoDB 7+ (or Docker).
 
 ```bash
-# one-shot with Docker
+# one-shot with Docker (Mongo + backend + frontend)
 docker-compose up -d
 ```
 
-Or run pieces separately:
+Or run pieces separately — **backend first, then point the frontend at it**:
 
 ```bash
-# Mongo
+# 1. Mongo
 docker-compose up mongodb -d
 
-# Backend (port 4000)
+# 2. Backend (port 4000)
 cd backend && npm install && cp .env.example .env && npm run dev
 
-# Frontend (port 4002)
-cd frontend && npm install && npm run dev
+# 3. Frontend — just set the backend URL and go
+cd frontend && npm install
+echo "VITE_BACKEND_URL=http://localhost:4000" > .env   # <-- only FE change you need
+npm run dev
 ```
 
 Open `http://localhost:4002`:
@@ -85,6 +99,8 @@ Open `http://localhost:4002`:
 2. `/settings` → paste your AI provider API key
 3. Create a project, add a resource, paste JSON shape, hit **Generate**
 4. Call `http://localhost:4000/mock/{your-prefix}/{endpoint}` from your app
+
+Deploying the backend somewhere else? Same frontend, just change `VITE_BACKEND_URL` to the new host and rebuild.
 
 ## Environment variables
 
@@ -99,7 +115,7 @@ Open `http://localhost:4002`:
 | `JWT_REFRESH_SECRET` | auto | Refresh token secret |
 | `JWT_ACCESS_TTL` | `60m` | Access token lifetime |
 | `JWT_REFRESH_TTL` | `7d` | Refresh token lifetime |
-| `VITE_BACKEND_URL` | `http://localhost:4000` | Dev proxy target |
+| `VITE_BACKEND_URL` | `http://localhost:4000` | **Frontend → backend URL. The one knob you flip when the backend moves.** |
 
 > `auto` values regenerate on each restart. Set them in production or every restart wipes sessions and breaks stored API keys.
 

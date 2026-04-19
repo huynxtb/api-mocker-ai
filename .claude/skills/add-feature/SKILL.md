@@ -11,11 +11,11 @@ argument-hint: "[feature description]"
 1. Read `CLAUDE.md` for architecture and conventions
 2. Analyze the feature request thoroughly — ask clarifying questions if ambiguous
 3. Identify all files that need creation or modification
-4. Check `docs/plans/` for related existing plans
+4. Check `.docs/plans/` for related existing plans
 
 ## Step 2: Write Plan
 
-Create or update a plan file in `docs/plans/` following this format:
+Create or update a plan file in `.docs/plans/` following this format:
 - Filename: `MMDDYYYY_NN_Feature_Name.md` (date + sequence number)
 - Include: Goal, affected files, tasks checklist, architecture decisions, risks
 - If a related plan exists, update it instead of creating a duplicate

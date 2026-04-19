@@ -10,12 +10,12 @@ argument-hint: "[feature name and what to change]"
 
 1. Read `CLAUDE.md` for architecture and conventions
 2. Find and read all code related to the existing feature
-3. Check `docs/plans/` for the original feature plan — understand original intent
+3. Check `.docs/plans/` for the original feature plan — understand original intent
 4. Identify what needs to change vs what should stay
 
 ## Step 2: Write Plan
 
-Create or update a plan file in `docs/plans/`:
+Create or update a plan file in `.docs/plans/`:
 - Filename: `MMDDYYYY_NN_Update_Feature_Name.md`
 - If original feature plan exists, update it with a new section rather than creating a separate file
 - Include: Current behavior, desired behavior, change strategy, affected files

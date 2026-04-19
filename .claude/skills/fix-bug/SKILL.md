@@ -11,12 +11,12 @@ argument-hint: "[bug description or issue number]"
 1. Read `CLAUDE.md` for architecture context
 2. Reproduce or understand the bug — get exact error messages, affected endpoints/pages
 3. Search codebase for relevant code using Grep/Glob
-4. Check `docs/plans/` and `FIX.md` for related known issues
+4. Check `.docs/plans/` and `FIX.md` for related known issues
 5. Identify root cause before writing any code
 
 ## Step 2: Write Plan
 
-Create or update a plan file in `docs/plans/`:
+Create or update a plan file in `.docs/plans/`:
 - Filename: `MMDDYYYY_NN_Fix_Bug_Name.md`
 - Include: Bug description, root cause analysis, fix strategy, affected files
 - If simple single-file fix, still document in plan (can be brief)

@@ -26,7 +26,7 @@ Block if:
 ## 2. Branch-name sanity check (Git Flow)
 
 Warn (don't block) if the branch doesn't match one of:
-- `feature/<slug>`, `fix/<slug>`, `bugfix/<slug>`, `hotfix/<slug>`, `chore/<slug>`, `docs/<slug>`, `refactor/<slug>`, `release/<version>`
+- `feature/<slug>`, `fix/<slug>`, `bugfix/<slug>`, `hotfix/<slug>`, `chore/<slug>`, `.docs/<slug>`, `refactor/<slug>`, `release/<version>`
 
 ## 3. Secret & diff scan
 
